@@ -400,7 +400,7 @@ public class ChunkChecker extends JavaPlugin
 	    // Display the details header message
 	    if (showDetails) 
 	    {
-	    	player.sendMessage((usePlayer) ? ChatColor.DARK_AQUA + "Detailed results of the chunks around you:" : ChatColor.DARK_AQUA + "Details of the chunk with the most entities:");
+	    	player.sendMessage(ChatColor.DARK_AQUA + ((usePlayer) ? "Detailed results of the chunks around you:" : "Details of the chunk with the most entities:"));
 	    }
 	    
 	    // Display the header message based on the arguments passed	    
@@ -414,7 +414,7 @@ public class ChunkChecker extends JavaPlugin
 	    }
 	    else // There are more than one chunks being displayed
 	    {
-	    	player.sendMessage((radiusDistance == 0) ? ChatColor.DARK_AQUA + "The " + listTot + " chunks with the most " + ((checkAll) ? "" : "living ") + "entities are:" : ChatColor.DARK_AQUA + "The " + listTot + " chunks in a radius of " + radiusDistance + " with the most " + ((checkAll) ? "" : "living ") + "entities are:");
+	    	player.sendMessage(ChatColor.DARK_AQUA + ((radiusDistance == 0) ? "The " + listTot + " chunks with the most " + ((checkAll) ? "" : "living ") + "entities are:" : "The " + listTot + " chunks in a radius of " + radiusDistance + " with the most " + ((checkAll) ? "" : "living ") + "entities are:"));
 	    }
 	    	 
 	    
@@ -613,7 +613,7 @@ public class ChunkChecker extends JavaPlugin
 			    	subData.totalLivingEntities = totalLiving; // Total Count
 			    	subData.worldName = currentWorld.getName(); // Name of the world the count is in
 			    	subData.chunkCenterX = chunkX; // Center X of the chunk
-			    	subData.chunkCenterZ = chunkZ; // Center X of the chunk
+			    	subData.chunkCenterZ = chunkZ; // Center Z of the chunk
 			    	//subData.entities = chunk.getEntities(); // The array of entities
 			    	subData.entities = myEntities;
 			    	
@@ -646,7 +646,7 @@ public class ChunkChecker extends JavaPlugin
 	    	
 	    	// Generate the message
 	    	String modMsg = ChatColor.WHITE + "In " + ChatColor.AQUA + trunkWorld + ChatColor.WHITE + ": ";    	
-	    	modMsg += (radiusDistance == 0) ? "chunk has " : "chunks have ";	    	
+	    	modMsg += "chunk" + ((radiusDistance == 0) ? " has " : "s have ");	    	
 	    	modMsg += "" + ChatColor.RED + data.totalLivingEntities + ChatColor.WHITE + " entities. Center: " + ChatColor.AQUA + "X=" + data.chunkCenterX + ", Z=" + data.chunkCenterZ;
 	    	
 	    	player.sendMessage(modMsg);		    	
