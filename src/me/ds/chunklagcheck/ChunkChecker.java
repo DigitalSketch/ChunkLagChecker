@@ -12,7 +12,7 @@ package me.ds.chunklagcheck;
  * 1.1.2 = Shortened sendMessage to fit to one line in MC Chat
  * 1.2.0 = Added chunk radius, ID-10-T error function, added argument to search around player, added argument to check for ALL entities, added argument to get details
  * 1.2.1 = Added the 'nearby' argument to allow the moderator to see what players are in render distance of them.  Deafulted the list argument to be set to 5 if no number is passed.  Cleaned up some code
- * 1.2.2 = Added the Wither checker :)
+ * 1.2.2 = Added the Wither checker :), added /nearby to do the same as /clc nearby
  * 
  */
 
@@ -161,7 +161,8 @@ public class ChunkChecker extends JavaPlugin
 							player.sendMessage(ChatColor.GOLD + "/clc a" + ChatColor.WHITE + " : Counts all entities, not just living");
 							player.sendMessage(ChatColor.GOLD + "/clc d" + ChatColor.WHITE + " : Displays details of all entities in top chunk");
 							player.sendMessage(ChatColor.GOLD + "/clc p" + ChatColor.WHITE + " : Searches chunks around the player");
-							player.sendMessage(ChatColor.GOLD + "/clc n" + ChatColor.WHITE + " : Returns a list of all players nearby");
+							player.sendMessage(ChatColor.GOLD + "/nearby" + ChatColor.WHITE + " : Returns a list of all players nearby");
+							player.sendMessage(ChatColor.GOLD + "/wither" + ChatColor.WHITE + " : Returns a list withers found in chunks");
 							
 							return false;
 						}
@@ -789,12 +790,13 @@ public class ChunkChecker extends JavaPlugin
 		    		if(entityToSearchFor == "wither" && ents[b] instanceof Wither)
 		    		{
 		    			entityCount++;
+		    			entityData = new EntityData();
 		    			entityData.entityX = ents[b].getLocation().getBlockX();
 		    			entityData.entityY = ents[b].getLocation().getBlockY();
 		    			entityData.entityZ = ents[b].getLocation().getBlockZ();
 		    			entityData.worldName = currentWorld.getName();
 		    			entityData.totalEntities = 1;
-		    			
+
 		    			entityList.add(entityData);
 		    		}
 		    	}
@@ -807,6 +809,7 @@ public class ChunkChecker extends JavaPlugin
 	    }
 	    else
 	    {
+	    	Collections.sort(entityList, new EntityLocationComparator());
 	    	ArrayList<EntityGroup> entityGroupList = groupEntities(entityList); // Call the function to create groups of entities
 	    	player.sendMessage(ChatColor.AQUA + "I found " + entityCount + " " + entityToSearchFor + ((entityCount > 1) ? "s" : "") + ":");
 	    	
@@ -850,9 +853,9 @@ public class ChunkChecker extends JavaPlugin
 			else
 			{
 				// We have groups, so lets check to see the distance between the current and previous one
-				int x1 = list.get(i).entityX;
+				int x1 = data.entityX;
 				int x2 = (int)groups.get(groups.size() - 1).groupX;
-				int z1 = list.get(i).entityZ;
+				int z1 = data.entityZ;
 				int z2 = (int)groups.get(groups.size() - 1).groupZ;
 				
 				int distance = (int)Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2));

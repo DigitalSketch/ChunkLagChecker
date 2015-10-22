@@ -7,4 +7,10 @@ public class EntityData
 	public int entityX = 0;
 	public int entityY = 0;
 	public int entityZ = 0;
+	
+	@Override
+	public String toString()
+	{
+		return "Count: " + totalEntities + ", World: " + worldName + " | " + entityX + " " + entityY + " " + entityZ;		
+	}
 }

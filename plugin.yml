@@ -1,5 +1,5 @@
 main: me.ds.chunklagcheck.ChunkChecker
-version: 1.2.2c
+version: 1.2.2
 name: ChunkLagChecker
 description: Looks for chunks with the most entities
 permission: entitycheck.clc

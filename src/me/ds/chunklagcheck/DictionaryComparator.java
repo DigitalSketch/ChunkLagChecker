@@ -2,10 +2,10 @@ package me.ds.chunklagcheck;
 
 import java.util.Comparator;
 
-public class DictionaryComparator implements Comparator 
+public class DictionaryComparator implements Comparator<EntityDetails>
 {
 	@Override
-	public int compare(Object o1, Object o2) 
+	public int compare(EntityDetails o1, EntityDetails o2) 
 	{
 		EntityDetails obj1 = (EntityDetails) o1;
 		EntityDetails obj2 = (EntityDetails) o2;
