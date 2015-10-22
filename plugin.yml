@@ -1,0 +1,13 @@
+main: me.ds.chunklagcheck.ChunkChecker
+version: 1.2.2c
+name: ChunkLagChecker
+description: Looks for chunks with the most entities
+permission: entitycheck.clc
+permission-message: Dude, you don't have the access!
+commands:
+  clc:
+    description: Runs the Chunk Lag Checker
+  nearby:
+    description: Runs the Nearby command to search users within the server's viewable distance
+  wither:
+    description: Checks for withers
