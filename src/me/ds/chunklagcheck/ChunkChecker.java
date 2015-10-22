@@ -17,41 +17,26 @@ package me.ds.chunklagcheck;
  */
 
 import java.util.logging.Logger;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
-import org.bukkit.Server;
 import org.bukkit.World;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Wither;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import net.minecraft.server.v1_8_R3.IChatBaseComponent;
-import net.minecraft.server.v1_8_R3.IChatBaseComponent.ChatSerializer;
-import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
-
-
 public class ChunkChecker extends JavaPlugin
 {
-
-	private static final String EntityDetails = null;
 
 	Player player = null;
 	
@@ -225,6 +210,7 @@ public class ChunkChecker extends JavaPlugin
 							else if(strIsNumber(args[a].toString())) // Check to see if the second arg is a number 
 							{
 								listCount = Integer.parseInt(args[a].toString());
+								if(listCount > 10) { listCount = 10; }
 							}
 							else if (nextArgumentIsValid(args[a].toString()))
 							{
@@ -347,7 +333,7 @@ public class ChunkChecker extends JavaPlugin
 	}
 	
 	// Checks to see if an item exists in a current ArrayList
-	public int checkValueInEntityDetailsArray(String val, ArrayList list)
+	public int checkValueInEntityDetailsArray(String val, ArrayList<EntityDetails> list)
 	{
 		int returnIndex = -1;
 		
@@ -439,7 +425,7 @@ public class ChunkChecker extends JavaPlugin
 	// Function that doesn't use the Radius arg and returns the chunk data in an Array
 	public ArrayList<ChunkData> getChunksWithNoRadius(boolean allEntities) 
 	{
-		List worlds = Bukkit.getWorlds(); // Gets all the worlds loaded	
+		List<World> worlds = Bukkit.getWorlds(); // Gets all the worlds loaded	
 	    int a, b, i; // ints for 'for' loops
 	    ArrayList<ChunkData> chunkDataList = new ArrayList<ChunkData>(); // Array list for the chunk data
 	    
@@ -497,11 +483,10 @@ public class ChunkChecker extends JavaPlugin
 	// Function uses the Radius arg and returns the array of the chunk data
 	public ArrayList<ChunkData> getChunksWithRadius(int radius, boolean allEntities, boolean aroundPlayer)
 	{
-		List worlds = Bukkit.getWorlds(); // Gets all the worlds loaded	
-	    int a, b, c, i; // ints for 'for' loops
+		List<World> worlds = Bukkit.getWorlds(); // Gets all the worlds loaded	
+	    int a, c; // ints for 'for' loops
 	    ArrayList<ChunkData> chunkDataList = new ArrayList<ChunkData>(); // Array list for the chunk data
 	    int chunkRadius=(radius >> 4) + 1;
-	    int tempRadius=radius * radius;
 	    
 	    if(aroundPlayer) // We're searching around the player running the command
 	    {
@@ -725,7 +710,6 @@ public class ChunkChecker extends JavaPlugin
 	{
 		World playerWorld = player.getWorld();
     	Chunk playerChunk = playerWorld.getChunkAt(player.getLocation());
-    	ArrayList<ChunkData> chunkDataList = new ArrayList<ChunkData>(); // Array list for the chunk data
     	int viewableChunks = Bukkit.getViewDistance();
     	
     	// Get the range of chunks based on the X and Z values of the player
@@ -780,7 +764,7 @@ public class ChunkChecker extends JavaPlugin
 	// Checks for the players near the moderator within 10 chunks running the command
 	public void checkForEntityType(String entityToSearchFor)
 	{
-		List worlds = Bukkit.getWorlds(); // Gets all the worlds loaded	
+		List<World> worlds = Bukkit.getWorlds(); // Gets all the worlds loaded	
 	    int a, b, i; // ints for 'for' loops
 	    EntityData entityData = new EntityData();
 	    

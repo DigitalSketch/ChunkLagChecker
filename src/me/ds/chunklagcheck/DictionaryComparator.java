@@ -1,7 +1,6 @@
 package me.ds.chunklagcheck;
 
 import java.util.Comparator;
-import java.util.Map;
 
 public class DictionaryComparator implements Comparator 
 {

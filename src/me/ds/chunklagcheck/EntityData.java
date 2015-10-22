@@ -1,7 +1,5 @@
 package me.ds.chunklagcheck;
 
-import org.bukkit.entity.Entity;
-
 public class EntityData 
 {
 	public int totalEntities = 0;
