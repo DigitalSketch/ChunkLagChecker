@@ -24,6 +24,7 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.World;
 
 import org.bukkit.command.Command;
@@ -767,6 +768,8 @@ public class ChunkChecker extends JavaPlugin
 		List<World> worlds = Bukkit.getWorlds(); // Gets all the worlds loaded	
 	    int a, b, i; // ints for 'for' loops
 	    EntityData entityData = new EntityData();
+	    ArrayList<EntityData> entityList = new ArrayList();
+	    int entityCount = 0;
 	    
 	    // Loop through the worlds
 	    for(a = 0; a < worlds.size(); a++)
@@ -785,25 +788,97 @@ public class ChunkChecker extends JavaPlugin
 		    	{			    		
 		    		if(entityToSearchFor == "wither" && ents[b] instanceof Wither)
 		    		{
+		    			entityCount++;
 		    			entityData.entityX = ents[b].getLocation().getBlockX();
 		    			entityData.entityY = ents[b].getLocation().getBlockY();
 		    			entityData.entityZ = ents[b].getLocation().getBlockZ();
 		    			entityData.worldName = currentWorld.getName();
-		    			entityData.totalEntities++;
+		    			entityData.totalEntities = 1;
+		    			
+		    			entityList.add(entityData);
 		    		}
 		    	}
 		    }
 	    }
-	    
-	    if(entityData.totalEntities == 0)
+
+	    if(entityCount == 0)
 	    {
 	    	player.sendMessage(ChatColor.AQUA + "No " + entityToSearchFor + "s were found.");
 	    }
 	    else
 	    {
-	    	player.sendMessage(ChatColor.WHITE + "There " + ((entityData.totalEntities > 1) ? "are" : "is") + " " + ChatColor.RED + (entityData.totalEntities + 1) + ChatColor.AQUA + " " + entityToSearchFor + ((entityData.totalEntities > 1) ? "s" : "") + ChatColor.WHITE + " in the " + ChatColor.AQUA + entityData.worldName + ChatColor.WHITE + " at about " + ChatColor.AQUA + entityData.entityX + " " + entityData.entityY + " " + entityData.entityZ);
+	    	ArrayList<EntityGroup> entityGroupList = groupEntities(entityList); // Call the function to create groups of entities
+	    	player.sendMessage(ChatColor.AQUA + "I found " + entityCount + " " + entityToSearchFor + ((entityCount > 1) ? "s" : "") + ":");
 	    	
+	    	for(i = 0; i < entityGroupList.size(); i++)
+	    	{
+	    		int myCount = entityGroupList.get(i).totalEntities;
+	    		int myX = entityGroupList.get(i).groupX;
+	    		int myY = entityGroupList.get(i).groupY;
+	    		int myZ = entityGroupList.get(i).groupZ;
+	    		String myWorld = entityGroupList.get(i).worldName;
+	    		
+	    		player.sendMessage(ChatColor.WHITE + "There " + ((myCount > 1) ? "are" : "is") + " " + ChatColor.RED + myCount + ChatColor.AQUA + " " + entityToSearchFor + ((myCount > 1) ? "s" : "") + ChatColor.WHITE + " in the " + ChatColor.AQUA + myWorld + ChatColor.WHITE + " at about " + ChatColor.AQUA + myX + " " + myY + " " + myZ);
+	    	}	    	
 	    }
+	}
+	
+	public ArrayList<EntityGroup> groupEntities (ArrayList<EntityData> list)
+	{
+		ArrayList<EntityGroup> groups = new ArrayList();
+		EntityData data;
+		EntityGroup group;
+		int groupAllowableDistance = 50;
+		
+		for(int i = 0; i < list.size(); i++)
+		{
+			data = (EntityData) list.get(i); // Data of the current entity
+			
+			if (i == 0)
+			{
+				// No groups yet, so set the first one
+				group = new EntityGroup();
+				group.worldName = data.worldName;
+				group.groupID = 0;
+				group.groupX = data.entityX;
+				group.groupY = data.entityY;
+				group.groupZ = data.entityZ;
+				group.totalEntities = 1;
+				
+				groups.add(group);
+			}
+			else
+			{
+				// We have groups, so lets check to see the distance between the current and previous one
+				int x1 = list.get(i).entityX;
+				int x2 = (int)groups.get(groups.size() - 1).groupX;
+				int z1 = list.get(i).entityZ;
+				int z2 = (int)groups.get(groups.size() - 1).groupZ;
+				
+				int distance = (int)Math.sqrt((x1-x2)*(x1-x2) + (z1-z2)*(z1-z2));
+				
+				if(distance >= groupAllowableDistance)
+				{
+					group = new EntityGroup();
+					group.worldName = data.worldName;
+					group.groupID = groups.size();
+					group.groupX = data.entityX;
+					group.groupY = data.entityY;
+					group.groupZ = data.entityZ;
+					group.totalEntities = 1;
+					
+					groups.add(group);
+				}
+				else
+				{
+					group = groups.get(groups.size() - 1);
+					group.totalEntities += 1;
+					groups.set((groups.size() - 1), group);
+				}
+			}
+		}
+		
+		return groups;
 	}
 
 }
